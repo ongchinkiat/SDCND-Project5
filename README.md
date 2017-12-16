@@ -61,13 +61,19 @@ The feature sets are randomised and then split into Training and Testing set, at
 
 A C-Support Vector Classifier with RBF kernel is used to train the classifier.
 
+```
+svc = SVC(kernel='rbf')
+svc.fit(X_train, y_train)
+print('Test Accuracy of SVC = ', round(svc.score(X_test, y_test), 4))
+```
+
 The resulting SVC gives an accuracy score of 99.5%.
 
 ## Video Implementation
 
 To speed up the process of search for cars in the video images, we limit the search to the region of y = 400 to y = 656, ignoring the skyline region and the area too near to our car.
 
-Sliding Window search was also used to speed up processing. Since the calculation of HOG features is slow, HOG features for the entire image is calculated only once, and stored as an array.
+Sliding Window search was also used to speed up processing. Since the calculation of HOG features is slow, HOG features for the entire image is calculated only once, and stored in memory.
 
 ```
 hog1 = get_hog_features(ch1, orient, pix_per_cell, cell_per_block, feature_vec=False)
@@ -104,6 +110,12 @@ After some experimentation, I used these parameters:
 * Number of history frames = 10
 * Detection Threshold = 15
 
+Next, we use the scipy.ndimage.measurements.label function to split the heat map regions into seperate objects. Then for each object labeled, we calculate the bounding box and draw the bounding box on the video image.
+
+```
+labels = label(addheatmap)
+draw_img = draw_labeled_bboxes(draw_img, labels)
+```
 
 The resulting processed video is in the file: project_video_out.mp4
 
